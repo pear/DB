@@ -1,8 +1,0 @@
-<?php
-ini_set('include_path', realpath(dirname(__FILE__) . "/../..") . ":.:" . ini_get('include_path'));
-
-define('DRIVER_DSN', '');
-//define('DRIVER_DSN', 'pgsql://postgres@localhost/test');
-//define('DRIVER_DSN', 'mysql://root@localhost/test');
-//define('DRIVER_DSN', 'oci8://system:manager@');
-?>
