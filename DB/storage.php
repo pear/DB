@@ -336,7 +336,7 @@ class DB_storage extends PEAR
         }
         reset($rowdata);
         $found_keycolumn = false;
-        foreach($rowdata as $key => $value) {
+        foreach ($rowdata as $key => $value) {
             if ($key == $this->_keycolumn) {
                 $found_keycolumn = true;
             }
