@@ -18,6 +18,8 @@ matrix:
   include:
     - php: 5.3
       dist: precise
+services:
+  - mysql
 before_script:
   - mysql -e 'CREATE DATABASE pear_db;'
 script:
