@@ -885,6 +885,9 @@ class DB_common extends PEAR
     function autoExecute($table, $fields_values, $mode = DB_AUTOQUERY_INSERT,
                          $where = false)
     {
+        if ($where) {
+            $where = strtr($where, array('?' => '\?', '!' => '\!', '&' => '\&',));
+        }
         $sth = $this->autoPrepare($table, array_keys($fields_values), $mode,
                                   $where);
         if (DB::isError($sth)) {
