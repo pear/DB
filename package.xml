@@ -45,13 +45,13 @@ DB is compatible with PHP 5 and PHP 7.
   <name>Daniel Convissor</name>
   <user>danielc</user>
   <email>danielc@php.net</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
  <lead>
   <name>Adam Harvey</name>
   <user>aharvey</user>
   <email>aharvey@php.net</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
  <developer>
   <name>Stig Bakken</name>
@@ -65,10 +65,10 @@ DB is compatible with PHP 5 and PHP 7.
   <email>cox@idecnet.com</email>
   <active>no</active>
  </developer>
- <date>2018-12-05</date>
+ <date>2020-04-19</date>
  <version>
-  <release>1.9.3</release>
-  <api>1.9.0</api>
+  <release>1.10.0</release>
+  <api>1.10.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -76,8 +76,10 @@ DB is compatible with PHP 5 and PHP 7.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-* PR #4: Change pg_exec to pg_query
-* PR #5: added php72
+* PR # 7: Fixes an issue with oci8 driver
+* PR # 8: each() deprecated in PHP 7.2
+* PR # 9: Add recognition for error codes for Deadlocks and lock timeouts
+* PR #10: Remove curly brace array/string offset access
  </notes>
  <contents>
   <dir name="/">
