@@ -190,6 +190,11 @@ define('DB_ERROR_LOCK_TIMEOUT', -30);
  * Database deadlock encountered.
  */
 define('DB_ERROR_DEADLOCK', -31);
+
+/**
+ * Invalid View found
+ */
+define('DB_ERROR_INVALID_VIEW', '-32');
 /**#@-*/
 
 // }}}
@@ -678,6 +683,7 @@ class DB
                 DB_ERROR_INVALID_DATE       => 'invalid date or time',
                 DB_ERROR_INVALID_DSN        => 'invalid DSN',
                 DB_ERROR_INVALID_NUMBER     => 'invalid number',
+                DB_ERROR_INVALID_VIEW       => 'invalid view',
                 DB_ERROR_MISMATCH           => 'mismatch',
                 DB_ERROR_NEED_MORE_DATA     => 'insufficient data supplied',
                 DB_ERROR_NODBSELECTED       => 'no database selected',
