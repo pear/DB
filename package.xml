@@ -65,10 +65,10 @@ DB is compatible with PHP 5 and PHP 7.
   <email>cox@idecnet.com</email>
   <active>no</active>
  </developer>
- <date>2020-04-19</date>
+ <date>2021-08-10</date>
  <version>
-  <release>1.10.0</release>
-  <api>1.10.0</api>
+  <release>1.11.0</release>
+  <api>1.11.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -76,10 +76,7 @@ DB is compatible with PHP 5 and PHP 7.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-* PR # 7: Fixes an issue with oci8 driver
-* PR # 8: each() deprecated in PHP 7.2
-* PR # 9: Add recognition for error codes for Deadlocks and lock timeouts
-* PR #10: Remove curly brace array/string offset access
+* PR #11: Define invalid view error and also include deadlock and lockwait errors
  </notes>
  <contents>
   <dir name="/">
