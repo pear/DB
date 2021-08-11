@@ -7,7 +7,7 @@ DB::DB_Error
 require_once dirname(__FILE__) . '/include.inc';
 require_once 'DB.php';
 
-function test_error_handler($errno, $errmsg, $file, $line, $vars) {
+function test_error_handler($errno, $errmsg, $file, $line, $vars=null) {
     if (defined('E_STRICT')) {
         if ($errno & E_STRICT
             && (error_reporting() & E_STRICT) != E_STRICT) {
