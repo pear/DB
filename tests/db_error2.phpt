@@ -21,7 +21,7 @@ class myclass {
           . strtolower($obj->toString()) . "\n";
     }
 }
-function test_error_handler($errno, $errmsg, $file, $line, $vars) {
+function test_error_handler($errno, $errmsg, $file, $line, $vars=null) {
     if (defined('E_STRICT')) {
         if ($errno & E_STRICT
             && (error_reporting() & E_STRICT) != E_STRICT) {
