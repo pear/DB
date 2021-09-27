@@ -315,6 +315,7 @@ class DB_common extends PEAR
      *   + odbc(db2)
      *   + pgsql
      *   + sqlite
+     *   + sqlite3
      *   + sybase (must execute <kbd>set quoted_identifier on</kbd> sometime
      *     prior to use)
      *
@@ -414,6 +415,10 @@ class DB_common extends PEAR
      *      </li>
      *      <li>
      *        <kbd>sqlite</kbd> -> <samp>1/0</samp>
+     *        (<kbd>INTEGER</kbd>)
+     *      </li>
+     *      <li>
+     *        <kbd>sqlite3</kbd> -> <samp>1/0</samp>
      *        (<kbd>INTEGER</kbd>)
      *      </li>
      *      <li>
@@ -641,6 +646,7 @@ class DB_common extends PEAR
      * + mysql
      * + mysqli
      * + sqlite
+     * + sqlite3
      *
      *
      * <samp>DB_PORTABILITY_NUMROWS</samp>
@@ -720,6 +726,7 @@ class DB_common extends PEAR
                         case 'mysql':
                         case 'mysqli':
                         case 'sqlite':
+                        case 'sqlite3':
                             $this->options['portability'] =
                                     DB_PORTABILITY_DELETE_COUNT;
                             break;

@@ -20,6 +20,7 @@ $backends = array(
     'odbc',
     'pgsql',
     'sqlite',
+    'sqlite3',
     'sybase',
 );
 
@@ -50,4 +51,5 @@ testing oci8: object: db_oci8: (phptype=oci8, dbsyntax=oci8)
 testing odbc: object: db_odbc: (phptype=odbc, dbsyntax=sql92)
 testing pgsql: object: db_pgsql: (phptype=pgsql, dbsyntax=pgsql)
 testing sqlite: object: db_sqlite: (phptype=sqlite, dbsyntax=sqlite)
+testing sqlite3: object: db_sqlite3: (phptype=sqlite3, dbsyntax=sqlite)
 testing sybase: object: db_sybase: (phptype=sybase, dbsyntax=sybase)
