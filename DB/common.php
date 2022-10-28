@@ -136,6 +136,8 @@ class DB_common extends PEAR
      */
     var $_next_query_manip = false;
 
+    var $num_rows = 0;
+
 
     // }}}
     // {{{ DB_common
