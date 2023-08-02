@@ -588,6 +588,24 @@ class DB_sqlite3 extends DB_common
         
         return $this->raiseError($result);
     }
+
+    // }}}
+    // {{{ lastId()
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database
+     *
+     * @return int the row ID of the most recent INSERT into the database.
+     *             If no successful INSERTs into rowid tables have ever
+     *             occurred on this database connection,
+     *             then SQLite3::lastInsertRowID() returns 0
+     *
+     * @see DB_common::lastID(), SQLite3::lastInsertRowID()
+     */
+    function lastId()
+    {
+        return $this->connection->lastInsertRowID();
+    }
     
     // }}}
     // {{{ getDbFileStats()
@@ -800,7 +818,6 @@ class DB_sqlite3 extends DB_common
      *                 A DB_Error object on failure.
      *
      * @see DB_common::tableInfo()
-     * @since Method available since Release 1.7.0
      */
     function tableInfo($result, $mode = null)
     {
@@ -923,43 +940,6 @@ class DB_sqlite3 extends DB_common
                         . "WHERE tbl_name LIKE '{$args['table']}' "
                         . "AND type!='meta' "
                             . 'ORDER BY type DESC, name;';
-            case 'alter':
-                /*
-                 * SQLite does not support ALTER TABLE; this is a helper query
-                 * to handle this. 'table' represents the table name, 'rows'
-                 * the news rows to create, 'save' the row(s) to keep _with_
-                 * the data.
-                 *
-                 * Use like:
-                 * $args = array(
-                 *     'table' => $table,
-                 *     'rows'  => "id INTEGER PRIMARY KEY, firstname TEXT, surname TEXT, datetime TEXT",
-                 *     'save'  => "NULL, titel, content, datetime"
-                 * );
-                 * $res = $db->query( $db->getSpecialQuery('alter', $args));
-                 */
-                $rows = strtr($args['rows'], $this->keywords);
-                
-                $q = array(
-                    'BEGIN TRANSACTION',
-                    "CREATE TEMPORARY TABLE {$args['table']}_backup ({$args['rows']})",
-                    "INSERT INTO {$args['table']}_backup SELECT {$args['save']} FROM {$args['table']}",
-                    "DROP TABLE {$args['table']}",
-                    "CREATE TABLE {$args['table']} ({$args['rows']})",
-                    "INSERT INTO {$args['table']} SELECT {$rows} FROM {$args['table']}_backup",
-                    "DROP TABLE {$args['table']}_backup",
-                    'COMMIT',
-                );
-                
-                /*
-                 * This is a dirty hack, since the above query will not get
-                 * executed with a single query call so here the query method
-                 * will be called directly and return a select instead.
-                 */
-                foreach ($q as $query) {
-                    $this->query($query);
-                }
-                return "SELECT * FROM {$args['table']};";
             default:
                 return null;
         }
