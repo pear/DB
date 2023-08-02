@@ -595,6 +595,8 @@ class DB_sqlite3 extends DB_common
     /**
      * Returns the row ID of the most recent INSERT into the database
      *
+     * @param string  $link_identifier DBMS link identifier
+     *
      * @return int the row ID of the most recent INSERT into the database.
      *             If no successful INSERTs into rowid tables have ever
      *             occurred on this database connection,
@@ -602,7 +604,7 @@ class DB_sqlite3 extends DB_common
      *
      * @see DB_common::lastID(), SQLite3::lastInsertRowID()
      */
-    function lastId()
+    function lastId($link_identifier = null)
     {
         return $this->connection->lastInsertRowID();
     }
