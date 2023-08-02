@@ -746,6 +746,29 @@ class DB_mysqli extends DB_common
         return $this->raiseError($result);
     }
 
+    // }}}
+    // {{{ lastId()
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database
+     *
+     * @param string  $link_identifier mysqli link identifier
+     *
+     * @return int the row ID of the most recent INSERT into the database.
+     *             If no successful INSERTs into rowid tables have ever
+     *             occurred on this database connection then returns 0.
+     *
+     * @see DB_common::lastID()
+     */
+    function lastId($link_identifier = null)
+    {
+        $id = $this->connection->insert_id();
+        if(empty($id) || !is_int($id)) {
+            return 0;
+        }
+        return $id;
+    }
+
     /**
      * Creates a new sequence
      *
