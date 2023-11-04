@@ -96,6 +96,7 @@ switch ($dbh->phptype . ':' . $dbh->dbsyntax) {
     case 'oci8:oci8':
     case 'pgsql:pgsql':
     case 'sqlite:sqlite':
+    case 'sqlite3:sqlite':
         $res = $dbh->query('DROP INDEX fakeindex');
         break;
     case 'mssql:mssql':
@@ -222,6 +223,7 @@ if ($dbh->phptype != 'msql') {
     $res = $dbh->query('INSERT INTO b (b) values (2)');
     switch ($dbh->phptype) {
         case 'sqlite':
+        case 'sqlite3':
             check_error($res, DB_ERROR_CONSTRAINT, false);
             break;
         default:
@@ -233,6 +235,7 @@ if ($dbh->phptype != 'msql') {
     $res = $dbh->query('DELETE FROM a WHERE a = 1');
     switch ($dbh->phptype) {
         case 'sqlite':
+        case 'sqlite3':
             check_error($res, DB_ERROR_CONSTRAINT, false);
             break;
         default:
@@ -322,6 +325,7 @@ switch ($dbh->phptype) {
     case 'mysql':
     case 'mysqli':
     case 'sqlite':
+    case 'sqlite3':
         /* Not all databases detect division by zero errors. We call these
          * databases "broken". */
         check_error($res, null, false);
@@ -337,6 +341,7 @@ switch ($dbh->phptype) {
     case 'mysql':
     case 'mysqli':
     case 'sqlite':
+    case 'sqlite3':
         check_error($res, DB_ERROR_INVALID_NUMBER, false);
         break;
     default:
@@ -357,6 +362,7 @@ switch ($dbh->phptype) {
     case 'odbc':
     case 'pgsql':
     case 'sqlite':
+    case 'sqlite3':
         check_error($res, DB_ERROR_INVALID_NUMBER, false);
         break;
     default:
@@ -380,6 +386,7 @@ switch ($dbh->phptype . ':' . $dbh->dbsyntax) {
     case 'oci8:oci8':
     case 'odbc:access':
     case 'sqlite:sqlite':
+    case 'sqlite3:sqlite':
         check_error($res, DB_ERROR_INVALID_NUMBER, false);
         break;
     default:
@@ -400,6 +407,7 @@ switch ($dbh->phptype . ':' . $dbh->dbsyntax) {
     case 'odbc:access':
     case 'pgsql:pgsql':
     case 'sqlite:sqlite':
+    case 'sqlite3:sqlite':
         check_error($res, DB_ERROR_INVALID_NUMBER, false);
         break;
     default:
@@ -439,6 +447,7 @@ switch ($dbh->phptype . ':' . $dbh->dbsyntax) {
     case 'odbc:access':
     case 'sqlite:sqlite':
     case 'sybase:sybase':
+    case 'sqlite3:sqlite':
         check_error($res, DB_ERROR_INVALID, false);
         break;
     case 'fbsql:fbsql':
@@ -460,6 +469,7 @@ switch ($dbh->phptype . ':' . $dbh->dbsyntax) {
     case 'odbc:access':
     case 'sqlite:sqlite':
     case 'sybase:sybase':
+    case 'sqlite3:sqlite':
         check_error($res, DB_ERROR_INVALID, false);
         break;
     case 'fbsql:fbsql':

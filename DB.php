@@ -765,7 +765,11 @@ class DB
         if (is_array($dsn)) {
             $dsn = array_merge($parsed, $dsn);
             if (!$dsn['dbsyntax']) {
-                $dsn['dbsyntax'] = $dsn['phptype'];
+                if($dsn['phptype'] == "sqlite3") {
+                    $dsn['dbsyntax'] = "sqlite";
+                } else {
+                    $dsn['dbsyntax'] = $dsn['phptype'];
+                }
             }
             return $dsn;
         }

@@ -80,6 +80,7 @@ switch ($dbh->phptype) {
     case 'mysql':
     case 'mysqli':
     case 'sqlite':
+    case 'sqlite3':
         $expected = '42 bing This is a test 1999-11-21';
         break;
     case 'ifx':
