@@ -1809,6 +1809,23 @@ class DB_common extends PEAR
     }
 
     // }}}
+    // {{{ lastId()
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database
+     *
+     * @param string  $link_identifier  DBMS link identifier
+     *
+     * @return int the row ID of the most recent INSERT into the database.
+     *             If no successful INSERTs into rowid tables have ever
+     *             occurred on this database connection then returns 0.
+     */
+    function lastId($link_identifier = null)
+    {
+        return $this->raiseError(DB_ERROR_NOT_CAPABLE);
+    }
+
+    // }}}
     // {{{ createSequence()
 
     /**
