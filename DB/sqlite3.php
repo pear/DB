@@ -606,7 +606,11 @@ class DB_sqlite3 extends DB_common
      */
     function lastId($link_identifier = null)
     {
-        return $this->connection->lastInsertRowID();
+        $id = $this->connection->lastInsertRowID();
+        if (empty($id) || !is_int($id)) {
+            return 0;
+        }
+        return $id;
     }
     
     // }}}

@@ -763,7 +763,7 @@ class DB_mysqli extends DB_common
     function lastId($link_identifier = null)
     {
         $id = $this->connection->insert_id();
-        if(empty($id) || !is_int($id)) {
+        if (empty($id) || !is_int($id)) {
             return 0;
         }
         return $id;
