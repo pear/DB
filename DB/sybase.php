@@ -17,7 +17,7 @@
  * @category   Database
  * @package    DB
  * @author     Sterling Hughes <sterling@php.net>
- * @author     Ant�nio Carlos Ven�ncio J�nior <floripa@php.net>
+ * @author     Antônio Carlos Venâncio Júnior <floripa@php.net>
  * @author     Daniel Convissor <danielc@php.net>
  * @copyright  1997-2007 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
@@ -43,7 +43,7 @@ require_once 'DB/common.php';
  * @category   Database
  * @package    DB
  * @author     Sterling Hughes <sterling@php.net>
- * @author     Ant�nio Carlos Ven�ncio J�nior <floripa@php.net>
+ * @author     Antônio Carlos Venâncio Júnior <floripa@php.net>
  * @author     Daniel Convissor <danielc@php.net>
  * @copyright  1997-2007 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
