@@ -589,7 +589,7 @@ class DB
      *
      * @return string  the DB API version number
      */
-    function apiVersion()
+    public static function apiVersion()
     {
         return '@package_version@';
     }
