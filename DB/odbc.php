@@ -502,7 +502,7 @@ class DB_odbc extends DB_common
         $repeat = 0;
         do {
             $this->pushErrorHandling(PEAR_ERROR_RETURN);
-            $result = $this->query("update ${seqname} set id = id + 1");
+            $result = $this->query("update {$seqname} set id = id + 1");
             $this->popErrorHandling();
             if ($ondemand && DB::isError($result) &&
                 $result->getCode() == DB_ERROR_NOSUCHTABLE) {
@@ -513,7 +513,7 @@ class DB_odbc extends DB_common
                 if (DB::isError($result)) {
                     return $this->raiseError($result);
                 }
-                $result = $this->query("insert into ${seqname} (id) values(0)");
+                $result = $this->query("insert into {$seqname} (id) values(0)");
             } else {
                 $repeat = 0;
             }
@@ -523,7 +523,7 @@ class DB_odbc extends DB_common
             return $this->raiseError($result);
         }
 
-        $result = $this->query("select id from ${seqname}");
+        $result = $this->query("select id from {$seqname}");
         if (DB::isError($result)) {
             return $result;
         }
