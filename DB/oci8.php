@@ -1075,8 +1075,8 @@ class DB_oci8 extends DB_common
                     $res[$i] = array(
                         'table' => '',
                         'name'  => $case_func(@oci_field_name($result, $i+1)),
-                        'type'  => @oci_field_name($result, $i+1),
-                        'len'   => @oci_field_name($result, $i+1),
+                        'type'  => @oci_field_type($result, $i+1),
+                        'len'   => @oci_field_size($result, $i+1),
                         'flags' => '',
                     );
                     if ($mode & DB_TABLEINFO_ORDER) {
