@@ -60,7 +60,12 @@ for ($i = 1; $i <= 5; $i++) {
     if (is_array($row)) {
         print implode(', ', $row) . "\n";
     } else {
-        var_dump($row);
+	// work around differing xdebug var_dump behavior
+	if (!empty($row)) {
+            print_r($row);
+	} else {
+	    echo "NULL\n";
+	}
     }
 }
 $sth->free();  // keep fbsql happy.
