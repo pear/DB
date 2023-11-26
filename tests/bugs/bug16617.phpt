@@ -8,11 +8,12 @@ include 'DB/mssql.php';
 $dbh = new DB_mssql();
 
 $str = "C:\\\r\nX";
-var_dump($str, $dbh->escapeSimple($str));
+echo print_r($str, true), "\n";
+echo print_r($dbh->escapeSimple($str), true), "\n";
 ?>
 --EXPECT--
-string(6) "C:\
-X"
-string(9) "C:\\
+C:\
+X
+C:\\
 
-X"
+X

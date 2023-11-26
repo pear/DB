@@ -32,7 +32,7 @@ if (empty($dsns)) {
 }
 
 $dbms = key($dsns);
-$dsn = $dsns[$dbms];
+$dsn  = array_pop($dsns);
 
 if ($dbms == 'mssql') {
     ini_set('mssql.textlimit', 4096);
