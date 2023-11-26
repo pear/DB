@@ -15,12 +15,12 @@ env:
     - MYSQL_TEST_HOST=127.0.0.1
 matrix:
   include:
-    - php: 5.3
-      dist: precise
-    - php: 5.4
-      dist: trusty
     - php: 5.5
       dist: trusty
+    - php: 5.4
+      dist: trusty
+    - php: 5.3
+      dist: precise
 services:
   - mysql
 before_script:
