@@ -299,7 +299,10 @@ class DB_mysqli extends DB_common
         $ini = ini_get('track_errors');
         @ini_set('track_errors', 1);
         $php_errormsg = '';
-
+        if (version_compare(PHP_VERSION, '8.1', '>='))
+        {
+            mysqli_report(MYSQLI_REPORT_OFF);
+        }
         if (((int) $this->getOption('ssl')) === 1) {
             $init = mysqli_init();
             mysqli_ssl_set(
@@ -365,6 +368,10 @@ class DB_mysqli extends DB_common
     {
         $ret = @mysqli_close($this->connection);
         $this->connection = null;
+        if (version_compare(PHP_VERSION, '8.1', '>='))
+        {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        }
         return $ret;
     }
 
@@ -737,6 +744,29 @@ class DB_mysqli extends DB_common
         } while ($repeat);
 
         return $this->raiseError($result);
+    }
+
+    // }}}
+    // {{{ lastId()
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database
+     *
+     * @param string  $link_identifier mysqli link identifier
+     *
+     * @return int the row ID of the most recent INSERT into the database.
+     *             If no successful INSERTs into rowid tables have ever
+     *             occurred on this database connection then returns 0.
+     *
+     * @see DB_common::lastID()
+     */
+    function lastId($link_identifier = null)
+    {
+        $id = $this->connection->insert_id();
+        if(empty($id) || !is_int($id)) {
+            return 0;
+        }
+        return $id;
     }
 
     /**

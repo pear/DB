@@ -13,4 +13,5 @@ oci8    : Daniel Convissor <danielc@php.net>
 odbc    : Daniel Convissor <danielc@php.net>
 pgsql   : Daniel Convissor <danielc@php.net>
 sqlite  : Daniel Convissor <danielc@php.net>
+sqlite3 : Armin Graefe     <schengawegga@gmail.com>
 sybase  : Daniel Convissor <danielc@php.net>

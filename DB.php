@@ -471,7 +471,7 @@ class DB
             @include_once "DB/{$type}.php";
         }
 
-        $classname = "DB_${type}";
+        $classname = "DB_{$type}";
 
         if (!class_exists($classname)) {
             $tmp = PEAR::raiseError(null, DB_ERROR_NOT_FOUND, null, null,
@@ -544,12 +544,12 @@ class DB
 
         if (isset($options['debug']) && $options['debug'] >= 2) {
             // expose php errors with sufficient debug level
-            include_once "DB/${type}.php";
+            include_once "DB/{$type}.php";
         } else {
-            @include_once "DB/${type}.php";
+            @include_once "DB/{$type}.php";
         }
 
-        $classname = "DB_${type}";
+        $classname = "DB_{$type}";
         if (!class_exists($classname)) {
             $tmp = PEAR::raiseError(null, DB_ERROR_NOT_FOUND, null, null,
                                     "Unable to include the DB/{$type}.php"
@@ -589,7 +589,7 @@ class DB
      *
      * @return string  the DB API version number
      */
-    function apiVersion()
+    public static function apiVersion()
     {
         return '@package_version@';
     }
@@ -765,7 +765,11 @@ class DB
         if (is_array($dsn)) {
             $dsn = array_merge($parsed, $dsn);
             if (!$dsn['dbsyntax']) {
-                $dsn['dbsyntax'] = $dsn['phptype'];
+                if($dsn['phptype'] == "sqlite3") {
+                    $dsn['dbsyntax'] = "sqlite";
+                } else {
+                    $dsn['dbsyntax'] = $dsn['phptype'];
+                }
             }
             return $dsn;
         }

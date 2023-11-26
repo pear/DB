@@ -29,7 +29,8 @@ if (empty($dsns)) {
     die('skip At least one element of $dsns must be defined in setup.inc');
 }
 
-list($dbms, $dsn) = each($dsns);
+$dbms = key($dsns);
+$dsn = $dsns[$dbms];
 
 $dbh =& DB::connect($dsn, $options);
 if (DB::isError($dbh)) {

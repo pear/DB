@@ -654,6 +654,29 @@ class DB_mysql extends DB_common
     }
 
     // }}}
+    // {{{ lastId()
+
+    /**
+     * Returns the row ID of the most recent INSERT into the database
+     *
+     * @param string  $link_identifier mysql link identifier
+     *
+     * @return int the row ID of the most recent INSERT into the database.
+     *             If no successful INSERTs into rowid tables have ever
+     *             occurred on this database connection then returns 0.
+     *
+     * @see DB_common::lastID()
+     */
+    function lastId($link_identifier = null)
+    {
+        $id = mysql_insert_id($link_identifier);
+        if(empty($id) || !is_int($id)) {
+            return 0;
+        }
+        return $id;
+    }
+
+    // }}}
     // {{{ createSequence()
 
     /**
