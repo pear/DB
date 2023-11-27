@@ -534,7 +534,7 @@ class DB_sqlite3 extends DB_common
         if (DB::isError($result)) {
             return($result);
         }
-        $query   = "CREATE TRIGGER ${seqname}_cleanup AFTER INSERT ON $seqname
+        $query   = "CREATE TRIGGER {$seqname}_cleanup AFTER INSERT ON $seqname
                     BEGIN
                         DELETE FROM $seqname WHERE id<LAST_INSERT_ROWID();
                     END ";
@@ -606,7 +606,11 @@ class DB_sqlite3 extends DB_common
      */
     function lastId($link_identifier = null)
     {
-        return $this->connection->lastInsertRowID();
+        $id = $this->connection->lastInsertRowID();
+        if (empty($id) || !is_int($id)) {
+            return 0;
+        }
+        return $id;
     }
     
     // }}}

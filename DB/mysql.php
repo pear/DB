@@ -22,6 +22,7 @@
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/DB
+ * @deprecated since 1.12.0
  */
 
 /**
@@ -43,6 +44,7 @@ require_once 'DB/common.php';
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version    Release: @package_version@
  * @link       http://pear.php.net/package/DB
+ * @deprecated since 1.12.0
  */
 class DB_mysql extends DB_common
 {
@@ -590,7 +592,7 @@ class DB_mysql extends DB_common
         do {
             $repeat = 0;
             $this->pushErrorHandling(PEAR_ERROR_RETURN);
-            $result = $this->query("UPDATE ${seqname} ".
+            $result = $this->query("UPDATE {$seqname} ".
                                    'SET id=LAST_INSERT_ID(id+1)');
             $this->popErrorHandling();
             if ($result === DB_OK) {
@@ -602,7 +604,7 @@ class DB_mysql extends DB_common
                 // EMPTY SEQ TABLE
                 // Sequence table must be empty for some reason, so fill
                 // it and return 1 and obtain a user-level lock
-                $result = $this->getOne("SELECT GET_LOCK('${seqname}_lock',10)");
+                $result = $this->getOne("SELECT GET_LOCK('{$seqname}_lock',10)");
                 if (DB::isError($result)) {
                     return $this->raiseError($result);
                 }
@@ -612,14 +614,14 @@ class DB_mysql extends DB_common
                 }
 
                 // add the default value
-                $result = $this->query("REPLACE INTO ${seqname} (id) VALUES (0)");
+                $result = $this->query("REPLACE INTO {$seqname} (id) VALUES (0)");
                 if (DB::isError($result)) {
                     return $this->raiseError($result);
                 }
 
                 // Release the lock
                 $result = $this->getOne('SELECT RELEASE_LOCK('
-                                        . "'${seqname}_lock')");
+                                        . "'{$seqname}_lock')");
                 if (DB::isError($result)) {
                     return $this->raiseError($result);
                 }
@@ -699,12 +701,12 @@ class DB_mysql extends DB_common
             return $res;
         }
         // insert yields value 1, nextId call will generate ID 2
-        $res = $this->query("INSERT INTO ${seqname} (id) VALUES (0)");
+        $res = $this->query("INSERT INTO {$seqname} (id) VALUES (0)");
         if (DB::isError($res)) {
             return $res;
         }
         // so reset to zero
-        return $this->query("UPDATE ${seqname} SET id = 0");
+        return $this->query("UPDATE {$seqname} SET id = 0");
     }
 
     // }}}
@@ -743,7 +745,7 @@ class DB_mysql extends DB_common
         // Obtain a user-level lock... this will release any previous
         // application locks, but unlike LOCK TABLES, it does not abort
         // the current transaction and is much less frequently used.
-        $result = $this->getOne("SELECT GET_LOCK('${seqname}_lock',10)");
+        $result = $this->getOne("SELECT GET_LOCK('{$seqname}_lock',10)");
         if (DB::isError($result)) {
             return $result;
         }
@@ -753,7 +755,7 @@ class DB_mysql extends DB_common
             return $this->mysqlRaiseError(DB_ERROR_NOT_LOCKED);
         }
 
-        $highest_id = $this->getOne("SELECT MAX(id) FROM ${seqname}");
+        $highest_id = $this->getOne("SELECT MAX(id) FROM {$seqname}");
         if (DB::isError($highest_id)) {
             return $highest_id;
         }
@@ -769,7 +771,7 @@ class DB_mysql extends DB_common
         // If another thread has been waiting for this lock,
         // it will go thru the above procedure, but will have no
         // real effect
-        $result = $this->getOne("SELECT RELEASE_LOCK('${seqname}_lock')");
+        $result = $this->getOne("SELECT RELEASE_LOCK('{$seqname}_lock')");
         if (DB::isError($result)) {
             return $result;
         }
