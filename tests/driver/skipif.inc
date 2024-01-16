@@ -32,7 +32,7 @@ if (empty($dsns)) {
 $dbms = key($dsns);
 $dsn = $dsns[$dbms];
 
-$dbh =& DB::connect($dsn, $options);
+$dbh = DB::connect($dsn, $options);
 if (DB::isError($dbh)) {
     die('skip ' . $dbh->getUserInfo());
 }

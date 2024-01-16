@@ -118,12 +118,12 @@ function examineArrayData($array, $expected, $field = false, $query = true) {
     $quirk_key = $dbh->phptype . ':' . $dbh->dbsyntax;
 
     if (DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE) {
-        print "matched expected result\n";
+        print "matched expected result" . PHP_EOL;
         return;
     }
 
     if (!is_array($array)) {
-        print "This DMBS didn't produce proper results\n";
+        print "This DMBS didn't produce proper results" . PHP_EOL;
         return;
     }
 
@@ -139,18 +139,19 @@ function examineArrayData($array, $expected, $field = false, $query = true) {
             if ($key == 'flags' && $value == '' && $query &&
                 !$quirks[$quirk_key]['finds_table'])
             {
-                $actual .= "$key ... matched expected value\n";
+                $actual .= "$key ... matched expected value" . PHP_EOL;
             } else {
                 if ($quirks[$quirk_key][$field][$key] == $value) {
-                    $actual .= "$key ... matched expected value\n";
+                    $actual .= "$key ... matched expected value" . PHP_EOL;
                 } else {
-                    if ($value == 0
+                    if (is_numeric($value)
+                        && $value == 0
                         && !$quirks[$quirk_key]['size_from_table'])
                     {
-                        $actual .= "$key ... matched expected value\n";
+                        $actual .= "$key ... matched expected value" . PHP_EOL;
                     } else {
                         $actual .= "$key ... was '$value' but we expected ";
-                        $actual .= "'{$quirks[$quirk_key][$field][$key]}'\n";
+                        $actual .= "'{$quirks[$quirk_key][$field][$key]}'" . PHP_EOL;
                     }
                 }
             }
@@ -158,40 +159,40 @@ function examineArrayData($array, $expected, $field = false, $query = true) {
             if ($key == 'table') {
                 if ($field <= 5) {
                     if ($value == 'phptest_fk') {
-                        $actual .= "$key ... matched expected value\n";
+                        $actual .= "$key ... matched expected value" . PHP_EOL;
                     } else {
                         if ($value == '' && $query &&
                             !$quirks[$quirk_key]['finds_table'])
                         {
-                            $actual .= "$key ... matched expected value\n";
+                            $actual .= "$key ... matched expected value" . PHP_EOL;
                         } else {
-                            $actual .= "$key ... was '$value' but we expected 'phptest_fk'\n";
+                            $actual .= "$key ... was '$value' but we expected 'phptest_fk'" . PHP_EOL;
                         }
                     }
                 } else {
                     if ($value == 'phptest') {
-                        $actual .= "$key ... matched expected value\n";
+                        $actual .= "$key ... matched expected value" . PHP_EOL;
                     } else {
                         if ($value == '' && $query &&
                             !$quirks[$quirk_key]['finds_table'])
                         {
-                            $actual .= "$key ... matched expected value\n";
+                            $actual .= "$key ... matched expected value" . PHP_EOL;
                         } else {
-                            $actual .= "$key ... was '$value' but we expected 'phptest_fk'\n";
+                            $actual .= "$key ... was '$value' but we expected 'phptest_fk'" . PHP_EOL;
                         }
                     }
                 }
             } else {
-                $actual .= "$key => $value\n";
+                $actual .= "$key => $value" . PHP_EOL;
             }
         }
     }
     if ($actual == $expected) {
-        print "matched expected result\n";
+        print "matched expected result" . PHP_EOL;
     } else {
-        print "DIDN'T match expected values...\n";
-        print "~~~~~~~~\nExpected:\n$expected\n";
-        print "~~~~\nActual:\n$actual\n~~~~~~~~\n\n";
+        print "DIDN'T match expected values..." . PHP_EOL;
+        print "~~~~~~~~" . PHP_EOL . "Expected:" . PHP_EOL . $expected . PHP_EOL;
+        print "~~~~" . PHP_EOL . "Actual:" . PHP_EOL . $actual . PHP_EOL . "~~~~~~~~" . PHP_EOL . PHP_EOL;
     }
 }
 
@@ -207,12 +208,12 @@ function returnArrayData($array) {
     $quirk_key = $dbh->phptype . ':' . $dbh->dbsyntax;
 
     if (!$quirks[$quirk_key]['handles_results']) {
-        return "\n";
+        return "" . PHP_EOL;
     }
 
     $out = '';
     foreach ($array as $key => $value) {
-        $out .= "$key => $value\n";
+        $out .= "$key => $value" . PHP_EOL;
     }
     return $out;
 }
@@ -570,12 +571,12 @@ $quirks = array(
         0 => array(
             'type' => 'int',
             'len' => 11,
-            'flags' => 'not_null multiple_key',
+            'flags' => 'not_null multiple_key group_by',
         ),
         1 => array(
             'type' => 'int',
             'len' => 11,
-            'flags' => 'not_null primary_key',
+            'flags' => 'not_null primary_key group_by',
         ),
         2 => array(
             'type' => 'blob',
@@ -585,20 +586,20 @@ $quirks = array(
         3 => array(
             'type' => 'date',
             'len' => 10,
-            'flags' => 'not_null multiple_key binary',
+            'flags' => 'not_null multiple_key',
         ),
         4 => array(
-            'type' => 'string',
+            'type' => 'char',
             'len' => 2,
             'flags' => 'not_null',
         ),
         5 => array(
-            'type' => 'real',
+            'type' => 'decimal',
             'len' => 4,
             'flags' => '',
         ),
         9 => array(
-            'type' => 'string',
+            'type' => 'varchar',
             'len' => 20,
             'flags' => '',
         ),
@@ -932,7 +933,7 @@ if ($quirk_key == 'mssql:mssql') {
      * of SQL Server we're talking to and its configuration. */
     $textsize = $dbh->getOne('SELECT @@TEXTSIZE');
     if (DB::isError($textsize)) {
-        echo 'Error retrieving @@TEXTSIZE: '.$textsize->getMessage()."\n";
+        echo 'Error retrieving @@TEXTSIZE: '.$textsize->getMessage()."" . PHP_EOL;
     } else {
         $quirks[$quirk_key][2]['len'] = (integer) $textsize;
     }
@@ -1062,45 +1063,45 @@ flags ... matched expected value
 
 
 
-print "\n==========================================\n";
-print "Passing result OBJECT to method in DB_<type>.\n";
-print "Output = default.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing result OBJECT to method in DB_<type>." . PHP_EOL;
+print "Output = default." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $resultobj =& runQuery();
 // This numRows call provides a regression test for bug #4388.
 $resultobj->numRows();
 $array = $dbh->tableInfo($resultobj);
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0);
 
-print "\ncolumn 9:\n";
+print PHP_EOL . "column 9:" . PHP_EOL;
 examineArrayData($array, $expected10, 9);
 
 
-print "\n==========================================\n";
-print "Passing result ID to method in DB_<type>.\n";
-print "Output = DB_TABLEINFO_ORDER.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing result ID to method in DB_<type>." . PHP_EOL;
+print "Output = DB_TABLEINFO_ORDER." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $resultobj =& runQuery();
 $array = $dbh->tableInfo($resultobj->result, DB_TABLEINFO_ORDER);
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0);
 
-print "\ncolumn 3:\n";
+print PHP_EOL . "column 3:" . PHP_EOL;
 examineArrayData($array, $expected04, 3);
 
-print "\nnum_fields: ";
+print PHP_EOL . "num_fields: ";
 if ($quirks[$quirk_key]['handles_results'] && $array['num_fields'] == 10) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } elseif (DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } else {
-    print "This DMBS didn't produce proper results\n";
+    print "This DMBS didn't produce proper results" . PHP_EOL;
 }
 
-print "\norder:\n";
+print PHP_EOL . "order:" . PHP_EOL;
 if ($quirks[$quirk_key]['handles_results'] && is_array($array['order'])) {
     $expected = 'a => 6
 b => 7
@@ -1113,35 +1114,35 @@ fk => 1
     ksort($array['order']);
     examineArrayData($array['order'], $expected);
 } elseif (DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } else {
-    print "This DMBS didn't produce proper results\n";
+    print "This DMBS didn't produce proper results" . PHP_EOL;
 }
 
 
 
-print "\n==========================================\n";
-print "Passing DB_TABLEINFO_ORDERTABLE to method in DB_result.\n";
-print "Output = DB_TABLEINFO_ORDERTABLE.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing DB_TABLEINFO_ORDERTABLE to method in DB_result." . PHP_EOL;
+print "Output = DB_TABLEINFO_ORDERTABLE." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $resultobj =& runQuery();
 $array = $resultobj->tableInfo(DB_TABLEINFO_ORDERTABLE);
 // Free this to keep interbase happy.
 $resultobj->free();
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0);
 
-print "\ncolumn 3:\n";
+print PHP_EOL . "column 3:" . PHP_EOL;
 examineArrayData($array, $expected04, 3);
 
-print "\nnum_fields: ";
+print PHP_EOL . "num_fields: ";
 if ($quirks[$quirk_key]['handles_results'] && $array['num_fields'] == 10) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } elseif (DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } else {
-    print "This DMBS didn't produce proper results\n";
+    print "This DMBS didn't produce proper results" . PHP_EOL;
 }
 
 
@@ -1158,16 +1159,16 @@ if ($quirks[$quirk_key]['handles_results']
     $actual = '';
 }
 if ($actual == $expected) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } else {
     if (($quirks[$quirk_key]['finds_table'] === false 
         || DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE)
         && $actual == '') {
-        print "matched expected result\n";
+        print "matched expected result" . PHP_EOL;
     } else {
-        print "DIDN'T match expected values...\n";
-        print "~~~~~~~~\nExpected:\n$expected\n";
-        print "~~~~\nActual:\n$actual\n~~~~~~~~\n\n";
+        print "DIDN'T match expected values..." . PHP_EOL;
+        print "~~~~~~~~" . PHP_EOL . "Expected:" . PHP_EOL . "$expected" . PHP_EOL;
+        print "~~~~" . PHP_EOL . "Actual:" . PHP_EOL . $actual . PHP_EOL . "~~~~~~~~" . PHP_EOL . PHP_EOL;
     }
 }
 
@@ -1187,55 +1188,55 @@ if ($quirks[$quirk_key]['handles_results']
     $actual = '';
 }
 if ($actual == $expected) {
-    print "matched expected result\n";
+    print "matched expected result" . PHP_EOL;
 } else {
     if (($quirks[$quirk_key]['finds_table'] === false 
         || DB::isError($array) && $array->getCode() == DB_ERROR_NOT_CAPABLE)
         && $actual == '') {
-        print "matched expected result\n";
+        print "matched expected result" . PHP_EOL;
     } else {
-        print "DIDN'T match expected values...\n";
-        print "~~~~~~~~\nExpected:\n$expected\n";
-        print "~~~~\nActual:\n$actual\n~~~~~~~~\n\n";
+        print "DIDN'T match expected values..." . PHP_EOL;
+        print "~~~~~~~~" . PHP_EOL . "Expected:" . PHP_EOL . $expected . PHP_EOL;
+        print "~~~~" . PHP_EOL . "Actual:" . PHP_EOL . $actual . PHP_EOL . "~~~~~~~~" . PHP_EOL . PHP_EOL;
     }
 }
 
 
-print "\n==========================================\n";
-print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver>.\n";
-print "Output = default.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver>." . PHP_EOL;
+print "Output = default." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $array = $dbh->tableInfo('phptest_fk');
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0, false);
 
-print "\ncolumn 1:\n";
+print PHP_EOL . "column 1:" . PHP_EOL;
 examineArrayData($array, $expected02, 1, false);
 
-print "\ncolumn 2:\n";
+print PHP_EOL . "column 2:" . PHP_EOL;
 examineArrayData($array, $expected03, 2, false);
 
-print "\ncolumn 3:\n";
+print PHP_EOL . "column 3:" . PHP_EOL;
 examineArrayData($array, $expected04, 3, false);
 
-print "\ncolumn 4:\n";
+print PHP_EOL . "column 4:" . PHP_EOL;
 examineArrayData($array, $expected05, 4, false);
 
-print "\ncolumn 5:\n";
+print PHP_EOL . "column 5:" . PHP_EOL;
 examineArrayData($array, $expected06, 5, false);
 
 
-print "\n==========================================\n";
-print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver>.\n";
-print "Output = DB_TABLEINFO_FULL.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver>." . PHP_EOL;
+print "Output = DB_TABLEINFO_FULL." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $array = $dbh->tableInfo('phptest_fk', DB_TABLEINFO_FULL);
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0, false);
 
-print "\norder:\n";
+print PHP_EOL . "order:" . PHP_EOL;
 $expect ='a => 0
 fk => 1
 cc => 2
@@ -1245,7 +1246,7 @@ f => 5
 ';
 examineArrayData($array['order'], $expect, false, false);
 
-print "\nordertable[phptest_fk]:\n";
+print PHP_EOL . "ordertable[phptest_fk]:" . PHP_EOL;
 $expect ='a => 0
 fk => 1
 cc => 2
@@ -1257,10 +1258,10 @@ examineArrayData($array['ordertable']['phptest_fk'], $expect);
 
 
 
-print "\n==========================================\n";
-print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver> AGAIN.\n";
-print "Output = DB_TABLEINFO_FULL, lowercasing turned off.\n";
-print "------------------------------------------\n";
+print PHP_EOL . "==========================================" . PHP_EOL;
+print "Passing TABLE NAME 'phptest_fk' to method in DB_<driver> AGAIN." . PHP_EOL;
+print "Output = DB_TABLEINFO_FULL, lowercasing turned off." . PHP_EOL;
+print "------------------------------------------" . PHP_EOL;
 $dbh->setOption('portability', DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 $array = $dbh->tableInfo('phptest_fk', DB_TABLEINFO_FULL);
 
@@ -1269,7 +1270,7 @@ $array = $dbh->tableInfo('phptest_fk', DB_TABLEINFO_FULL);
 $array[0]['table'] = strtolower($array[0]['table']);
 $array[0]['name'] = strtolower($array[0]['name']);
 
-print "\ncolumn 0:\n";
+print PHP_EOL . "column 0:" . PHP_EOL;
 examineArrayData($array, $expected01, 0, false);
 
 $dbh->setErrorHandling(PEAR_ERROR_RETURN);
