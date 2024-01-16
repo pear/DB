@@ -53,6 +53,12 @@ DB is compatible with PHP 5 and PHP 7.
   <email>aharvey@php.net</email>
   <active>no</active>
  </lead>
+ <lead>
+  <name>Armin Graefe</name>
+  <user>schengawegga</user>
+  <email>schengawegga@gmail.com</email>
+  <active>yes</active>
+ </lead>
  <developer>
   <name>Stig Bakken</name>
   <user>ssb</user>
@@ -65,10 +71,10 @@ DB is compatible with PHP 5 and PHP 7.
   <email>cox@idecnet.com</email>
   <active>no</active>
  </developer>
- <date>2021-08-10</date>
+ <date>2024-01-17</date>
  <version>
-  <release>1.11.0</release>
-  <api>1.11.0</api>
+  <release>1.12.0</release>
+  <api>1.12.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -76,7 +82,16 @@ DB is compatible with PHP 5 and PHP 7.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-* PR #11: Define invalid view error and also include deadlock and lockwait errors
+* feature: add sqlite3 driver #18
+* feature: add lastId() method on mysql, mysqli and sqlite3 #19 #21
+* task: fix prototypes for PHP 8 #12
+* task: Try and fix test by removing each #16
+* task: PHP8.1 Compatability restore error handling to previous state whilst … #13
+* task: DB::apiVersion() should be declared as static #17
+* task: Fix PHP8.2 Deprecated use of ${var} instead of {$var} #14
+* task: PHP8.2 ready #21
+* task: Mark mssql-Driver, mysql-Driver and sybase-Driver as Deprecated #21
+* bug: PHP 8.0 testcase failure #23 #24
  </notes>
  <contents>
   <dir name="/">
