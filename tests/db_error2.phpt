@@ -31,6 +31,15 @@ function test_error_handler($errno, $errmsg, $file, $line, $vars=null) {
     } else {
         define('E_STRICT', 2048);
     }
+    if (defined('E_DEPRECATED')) {
+        if ($errno & E_DEPRECATED
+            && (error_reporting() & E_DEPRECATED) != E_DEPRECATED) {
+            // Ignore E_STRICT notices unless they have been turned on
+            return;
+        }
+    } else {
+        define('E_DEPRECATED', 8192);
+    }
     $errortype = array (
         E_ERROR => 'Error',
         E_WARNING => 'Warning',
@@ -44,6 +53,7 @@ function test_error_handler($errno, $errmsg, $file, $line, $vars=null) {
         E_USER_WARNING => 'User Warning',
         E_USER_NOTICE => 'User Notice',
         E_STRICT => 'Strict Notice',
+        E_DEPRECATED => 'Deprecation Notice',
     );
     $prefix = $errortype[$errno];
     print strtolower("$prefix: $errmsg in " . basename($file)
