@@ -135,6 +135,9 @@ DB is compatible with PHP 5 and PHP 7.
     <file name="sqlite.php" role="php">
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
+    <file name="sqlite3.php" role="php">
+     <tasks:replace from="@package_version@" to="version" type="package-info" />
+    </file>
     <file name="storage.php" role="php">
      <tasks:replace from="@package_version@" to="version" type="package-info" />
     </file>
