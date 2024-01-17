@@ -112,10 +112,10 @@ $dsns = array(
     // 'db2'      => 'odbc(db2)://db2inst1:XXXX@/SAMPLE',
     // 'pgsql'    => 'pgsql://postgres@localhost/test',
     // 'sqlite'   => 'sqlite://dummy:@localhost/' . getcwd() . DIRECTORY_SEPARATOR . 'test.db?mode=0644',
-    // 'sqlite3'  => 'sqlite://dummy:@localhost/' . getcwd() . DIRECTORY_SEPARATOR . 'test.db?mode=0644',
+    // 'sqlite3'  => 'sqlite3://dummy:@localhost/' . getcwd() . DIRECTORY_SEPARATOR . 'test.db?mode=0644',
 );
 
-if (getenv('MYSQL_TEST_USER') !== '') {
+if (getenv('MYSQL_TEST_USER')) {
     $dsns['mysqli'] = array(
         'phptype' => 'mysqli',
         'username' => getenv('MYSQL_TEST_USER'),
