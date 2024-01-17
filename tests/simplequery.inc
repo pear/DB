@@ -55,7 +55,7 @@ switch ($dbh->phptype) {
         }
         break;
     default:
-        if (gettype($sth) == 'resource') {
+        if (gettype($sth) == 'resource' || gettype($sth) == 'object') {
             print "passed\n";
         } else {
             print "PROBLEM\n";

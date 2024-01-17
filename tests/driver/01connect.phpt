@@ -45,7 +45,8 @@ function check_dbh($dbh, $name) {
             }
             break;
         default:
-            if (gettype($dbh->connection) == 'resource') {
+            if (gettype($dbh->connection) == 'resource' ||
+                gettype($dbh->connection) == 'object') {
                 print "$name is connected\n";
             } else {
                 print "$name NOT connected\n";
