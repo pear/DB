@@ -251,7 +251,7 @@ class DB_storage extends PEAR
                     if ($i > 0) {
                         $info .= ",";
                     }
-                    $info .= $this->$keyname[$i];
+                    $info .= $this->{$keyname[$i]};
                 }
                 $info .= ")";
             } else {
