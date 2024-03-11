@@ -34,7 +34,7 @@ function test_error_handler($errno, $errmsg, $file, $line, $vars=null) {
     if (defined('E_DEPRECATED')) {
         if ($errno & E_DEPRECATED
             && (error_reporting() & E_DEPRECATED) != E_DEPRECATED) {
-            // Ignore E_STRICT notices unless they have been turned on
+            // Ignore E_DEPRECATED notices unless they have been turned on
             return;
         }
     } else {
