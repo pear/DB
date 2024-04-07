@@ -384,7 +384,11 @@ class DB_oci8 extends DB_common
         }
         if ($fetchmode & DB_FETCHMODE_ASSOC) {
             $arr = @oci_fetch_array($result,OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS);
-            $moredata = count($arr);
+            if (is_array($arr)) {
+                $moredata = count($arr);
+            } else {
+                $moredata = false;
+            }
             if ($this->options['portability'] & DB_PORTABILITY_LOWERCASE &&
                 $moredata)
             {
@@ -392,7 +396,11 @@ class DB_oci8 extends DB_common
             }
         } else {
             $arr = @oci_fetch_array($result,OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS);
-            $moredata = count($arr);
+            if (is_array($arr)) {
+                $moredata = count($arr);
+            } else {
+                $moredata = false;
+            }
         }
         if (!$moredata) {
             return null;
