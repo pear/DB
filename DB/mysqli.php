@@ -255,7 +255,7 @@ class DB_mysqli extends DB_common
      * Example of how to connect using SSL:
      * <code>
      * require_once 'DB.php';
-     * 
+     *
      * $dsn = array(
      *     'phptype'  => 'mysqli',
      *     'username' => 'someuser',
@@ -268,11 +268,11 @@ class DB_mysqli extends DB_common
      *     'capath'   => '/path/to/ca/dir',
      *     'cipher'   => 'AES',
      * );
-     * 
+     *
      * $options = array(
      *     'ssl' => true,
      * );
-     * 
+     *
      * $db = DB::connect($dsn, $options);
      * if (PEAR::isError($db)) {
      *     die($db->getMessage());
@@ -761,7 +761,7 @@ class DB_mysqli extends DB_common
      */
     function lastId($link_identifier = null)
     {
-        $id = $this->connection->insert_id();
+        $id = @mysqli_insert_id($this->connection);
         if (empty($id) || !is_int($id)) {
             return 0;
         }
