@@ -355,12 +355,12 @@ class DB_pgsql extends DB_common
         } elseif (preg_match('/^\s*\(*\s*(SELECT|EXPLAIN|FETCH|SHOW|WITH)\s/si',
                              $query))
         {
-            $this->row[(int)$result] = 0; // reset the row counter.
+           $this->row[$this->_resultId($result)] = 0; // reset the row counter.
             $numrows = $this->numRows($result);
             if (is_object($numrows)) {
                 return $numrows;
             }
-            $this->_num_rows[(int)$result] = $numrows;
+            $this->_num_rows[$this->_resultId($result)] = $numrows;
             $this->affected = 0;
             return $result;
         } else {
@@ -399,7 +399,7 @@ class DB_pgsql extends DB_common
      * DB_result::fetchInto() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result    the query result resource
+     * @param mixed    $result    the query result resource or PgSql\Result
      * @param array    $arr       the referenced array to put the data in
      * @param int      $fetchmode how the resulting array should be indexed
      * @param int      $rownum    the row number to fetch (0 = first row)
@@ -411,7 +411,7 @@ class DB_pgsql extends DB_common
      */
     function fetchInto($result, &$arr, $fetchmode, $rownum = null)
     {
-        $result_int = (int)$result;
+        $result_int = $this->_resultId($result);
         $rownum = ($rownum !== null) ? $rownum : $this->row[$result_int];
         if ($rownum >= $this->_num_rows[$result_int]) {
             return null;
@@ -447,7 +447,7 @@ class DB_pgsql extends DB_common
      * DB_result::free() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return bool  TRUE on success, FALSE if $result is invalid
      *
@@ -455,9 +455,9 @@ class DB_pgsql extends DB_common
      */
     function freeResult($result)
     {
-        if (is_resource($result)) {
-            unset($this->row[(int)$result]);
-            unset($this->_num_rows[(int)$result]);
+        if (is_resource($result) || is_a($result, 'PgSql\Result')) {
+            unset($this->row[$this->_resultId($result)]);
+            unset($this->_num_rows[$this->_resultId($result)]);
             $this->affected = 0;
             return @pg_free_result($result);
         }
@@ -525,7 +525,7 @@ class DB_pgsql extends DB_common
      * DB_result::numCols() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return int  the number of columns.  A DB_Error object on failure.
      *
@@ -550,7 +550,7 @@ class DB_pgsql extends DB_common
      * DB_result::numRows() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return int  the number of rows.  A DB_Error object on failure.
      *
@@ -905,7 +905,7 @@ class DB_pgsql extends DB_common
             $got_string = false;
         }
 
-        if (!is_resource($id)) {
+        if (!is_resource($id) || is_a($result, 'PgSql\Result'))  {
             return $this->pgsqlRaiseError(DB_ERROR_NEED_MORE_DATA);
         }
 
@@ -1110,6 +1110,29 @@ class DB_pgsql extends DB_common
                 || parent::_checkManip($query));
     }
 
+    // }}}
+    // {{{ _resultId()
+
+    /**
+     * Returns a numeric value identifying the result, used for maintaining
+     * indexes. Required by migration from resources to 'PgSql\Result'
+     * types with PHP 8.1.
+     *
+     * @param mixed $result  the query result resource or PgSql\Result
+     *
+     * @return int
+     *
+     * @access protected
+     */
+    function _resultId($result)
+    {
+        return 
+            is_resource($result)
+                ? function_exists('get_resource_id')
+                    ? get_resource_id($result) 
+                    : (int)$result
+                : spl_object_id($result);
+     }
 }
 
 /*
@@ -1119,4 +1142,3 @@ class DB_pgsql extends DB_common
  * End:
  */
 
-?>
