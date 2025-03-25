@@ -143,6 +143,14 @@ class DB_pgsql extends DB_common
     var $_num_rows = array();
 
 
+    /**
+     * PostgreSQL server version, required for accomodating changes
+     * related to metadata column deprecations (i.e. pg_attrdef.adsrc)
+     * @var integer
+     * @access private
+     */
+    var $pg_major_server_version = 0;
+
     // }}}
     // {{{ constructor
 
@@ -286,7 +294,13 @@ class DB_pgsql extends DB_common
             return $this->raiseError(DB_ERROR_CONNECT_FAILED,
                                      null, null, null,
                                      $php_errormsg);
+	}
+
+        if (function_exists('pg_version')) {
+            $pg_ver = pg_version($this->connection);
+	    $this->pg_major_server_version = intval($pg_ver['server'] ?? 0);
         }
+
         return DB_OK;
     }
 
@@ -905,7 +919,7 @@ class DB_pgsql extends DB_common
             $got_string = false;
         }
 
-        if (!is_resource($id) || is_a($result, 'PgSql\Result'))  {
+        if (!is_resource($id) && !is_a($id, 'PgSql\Result'))  {
             return $this->pgsqlRaiseError(DB_ERROR_NEED_MORE_DATA);
         }
 
@@ -957,16 +971,16 @@ class DB_pgsql extends DB_common
      * and "multiple_key".  The default value is passed through
      * rawurlencode() in case there are spaces in it.
      *
-     * @param int $resource   the PostgreSQL result identifier
+     * @param int $id   the PostgreSQL result identifier
      * @param int $num_field  the field number
      *
      * @return string  the flags
      *
      * @access private
      */
-    function _pgFieldFlags($resource, $num_field, $table_name)
+    function _pgFieldFlags($id, $num_field, $table_name)
     {
-        $field_name = @pg_field_name($resource, $num_field);
+        $field_name = @pg_field_name($id, $num_field);
 
         // Check if there's a schema in $table_name and update things
         // accordingly.
@@ -990,7 +1004,10 @@ class DB_pgsql extends DB_common
             $flags  = ($row[0] == 't') ? 'not_null ' : '';
 
             if ($row[1] == 't') {
-                $result = @pg_query($this->connection, "SELECT a.adsrc
+                $select_field = $this->pg_major_server_version >= 12
+                    ? 'pg_get_expr(a.adbin, a.adrelid)'
+                    : 'a.adsrc';
+                $result = @pg_query($this->connection, "SELECT $select_field
                                     FROM $from, pg_attrdef a
                                     WHERE tab.relname = typ.typname AND typ.typrelid = f.attrelid
                                     AND f.attrelid = a.adrelid AND f.attname = '$field_name'
