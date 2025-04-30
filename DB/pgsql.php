@@ -194,12 +194,12 @@ class DB_pgsql extends DB_common
      * Example of connecting to a new link via a socket:
      * <code>
      * require_once 'DB.php';
-     * 
+     *
      * $dsn = 'pgsql://user:pass@unix(/tmp)/dbname?new_link=true';
      * $options = array(
      *     'portability' => DB_PORTABILITY_ALL,
      * );
-     * 
+     *
      * $db = DB::connect($dsn, $options);
      * if (PEAR::isError($db)) {
      *     die($db->getMessage());
@@ -294,11 +294,11 @@ class DB_pgsql extends DB_common
             return $this->raiseError(DB_ERROR_CONNECT_FAILED,
                                      null, null, null,
                                      $php_errormsg);
-	}
+	    }
 
         if (function_exists('pg_version')) {
             $pg_ver = pg_version($this->connection);
-	    $this->pg_major_server_version = intval($pg_ver['server'] ?? 0);
+            $this->pg_major_server_version = intval(array_key_exists('server', $pg_ver) ? $pg_ver['server'] : 0);
         }
 
         return DB_OK;
@@ -493,7 +493,7 @@ class DB_pgsql extends DB_common
     function quoteBoolean($boolean) {
         return $boolean ? 'TRUE' : 'FALSE';
     }
-     
+
     // }}}
     // {{{ escapeSimple()
 
@@ -797,7 +797,7 @@ class DB_pgsql extends DB_common
     /**
      * Gets the DBMS' native error message produced by the last query
      *
-     * {@internal Error messages are used instead of error codes 
+     * {@internal Error messages are used instead of error codes
      * in order to support older versions of PostgreSQL.}}
      *
      * @return string  the DBMS' error message
@@ -1143,12 +1143,12 @@ class DB_pgsql extends DB_common
      */
     function _resultId($result)
     {
-        return 
+        return
             is_resource($result)
-                ? function_exists('get_resource_id')
-                    ? get_resource_id($result) 
+                ? ( function_exists('get_resource_id')
+                    ? get_resource_id($result)
                     : (int)$result
-                : spl_object_id($result);
+                ) : spl_object_id($result);
      }
 }
 
@@ -1159,3 +1159,4 @@ class DB_pgsql extends DB_common
  * End:
  */
 
+ ?>
