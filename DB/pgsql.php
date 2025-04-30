@@ -1148,7 +1148,11 @@ class DB_pgsql extends DB_common
                 ? ( function_exists('get_resource_id')
                     ? get_resource_id($result)
                     : (int)$result
-                ) : spl_object_id($result);
+                ) : ( function_exists('spl_object_id')
+                    ? spl_object_id($result)
+                    // catch-all statement
+                    : (int)$result
+                )
      }
 }
 
