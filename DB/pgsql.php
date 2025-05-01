@@ -143,6 +143,14 @@ class DB_pgsql extends DB_common
     var $_num_rows = array();
 
 
+    /**
+     * PostgreSQL server version, required for accomodating changes
+     * related to metadata column deprecations (i.e. pg_attrdef.adsrc)
+     * @var integer
+     * @access private
+     */
+    var $pg_major_server_version = 0;
+
     // }}}
     // {{{ constructor
 
@@ -186,12 +194,12 @@ class DB_pgsql extends DB_common
      * Example of connecting to a new link via a socket:
      * <code>
      * require_once 'DB.php';
-     * 
+     *
      * $dsn = 'pgsql://user:pass@unix(/tmp)/dbname?new_link=true';
      * $options = array(
      *     'portability' => DB_PORTABILITY_ALL,
      * );
-     * 
+     *
      * $db = DB::connect($dsn, $options);
      * if (PEAR::isError($db)) {
      *     die($db->getMessage());
@@ -286,7 +294,13 @@ class DB_pgsql extends DB_common
             return $this->raiseError(DB_ERROR_CONNECT_FAILED,
                                      null, null, null,
                                      $php_errormsg);
+	    }
+
+        if (function_exists('pg_version')) {
+            $pg_ver = pg_version($this->connection);
+            $this->pg_major_server_version = intval(array_key_exists('server', $pg_ver) ? $pg_ver['server'] : 0);
         }
+
         return DB_OK;
     }
 
@@ -355,12 +369,12 @@ class DB_pgsql extends DB_common
         } elseif (preg_match('/^\s*\(*\s*(SELECT|EXPLAIN|FETCH|SHOW|WITH)\s/si',
                              $query))
         {
-            $this->row[(int)$result] = 0; // reset the row counter.
+           $this->row[$this->_resultId($result)] = 0; // reset the row counter.
             $numrows = $this->numRows($result);
             if (is_object($numrows)) {
                 return $numrows;
             }
-            $this->_num_rows[(int)$result] = $numrows;
+            $this->_num_rows[$this->_resultId($result)] = $numrows;
             $this->affected = 0;
             return $result;
         } else {
@@ -399,7 +413,7 @@ class DB_pgsql extends DB_common
      * DB_result::fetchInto() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result    the query result resource
+     * @param mixed    $result    the query result resource or PgSql\Result
      * @param array    $arr       the referenced array to put the data in
      * @param int      $fetchmode how the resulting array should be indexed
      * @param int      $rownum    the row number to fetch (0 = first row)
@@ -411,7 +425,7 @@ class DB_pgsql extends DB_common
      */
     function fetchInto($result, &$arr, $fetchmode, $rownum = null)
     {
-        $result_int = (int)$result;
+        $result_int = $this->_resultId($result);
         $rownum = ($rownum !== null) ? $rownum : $this->row[$result_int];
         if ($rownum >= $this->_num_rows[$result_int]) {
             return null;
@@ -447,7 +461,7 @@ class DB_pgsql extends DB_common
      * DB_result::free() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return bool  TRUE on success, FALSE if $result is invalid
      *
@@ -455,9 +469,9 @@ class DB_pgsql extends DB_common
      */
     function freeResult($result)
     {
-        if (is_resource($result)) {
-            unset($this->row[(int)$result]);
-            unset($this->_num_rows[(int)$result]);
+        if (is_resource($result) || is_a($result, 'PgSql\Result')) {
+            unset($this->row[$this->_resultId($result)]);
+            unset($this->_num_rows[$this->_resultId($result)]);
             $this->affected = 0;
             return @pg_free_result($result);
         }
@@ -479,7 +493,7 @@ class DB_pgsql extends DB_common
     function quoteBoolean($boolean) {
         return $boolean ? 'TRUE' : 'FALSE';
     }
-     
+
     // }}}
     // {{{ escapeSimple()
 
@@ -525,7 +539,7 @@ class DB_pgsql extends DB_common
      * DB_result::numCols() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return int  the number of columns.  A DB_Error object on failure.
      *
@@ -550,7 +564,7 @@ class DB_pgsql extends DB_common
      * DB_result::numRows() instead.  It can't be declared "protected"
      * because DB_result is a separate object.
      *
-     * @param resource $result  PHP's query result resource
+     * @param mixed $result  PHP's query result resource or PgSql\Result
      *
      * @return int  the number of rows.  A DB_Error object on failure.
      *
@@ -783,7 +797,7 @@ class DB_pgsql extends DB_common
     /**
      * Gets the DBMS' native error message produced by the last query
      *
-     * {@internal Error messages are used instead of error codes 
+     * {@internal Error messages are used instead of error codes
      * in order to support older versions of PostgreSQL.}}
      *
      * @return string  the DBMS' error message
@@ -905,7 +919,7 @@ class DB_pgsql extends DB_common
             $got_string = false;
         }
 
-        if (!is_resource($id)) {
+        if (!is_resource($id) && !is_a($id, 'PgSql\Result'))  {
             return $this->pgsqlRaiseError(DB_ERROR_NEED_MORE_DATA);
         }
 
@@ -957,16 +971,16 @@ class DB_pgsql extends DB_common
      * and "multiple_key".  The default value is passed through
      * rawurlencode() in case there are spaces in it.
      *
-     * @param int $resource   the PostgreSQL result identifier
+     * @param int $id   the PostgreSQL result identifier
      * @param int $num_field  the field number
      *
      * @return string  the flags
      *
      * @access private
      */
-    function _pgFieldFlags($resource, $num_field, $table_name)
+    function _pgFieldFlags($id, $num_field, $table_name)
     {
-        $field_name = @pg_field_name($resource, $num_field);
+        $field_name = @pg_field_name($id, $num_field);
 
         // Check if there's a schema in $table_name and update things
         // accordingly.
@@ -990,7 +1004,10 @@ class DB_pgsql extends DB_common
             $flags  = ($row[0] == 't') ? 'not_null ' : '';
 
             if ($row[1] == 't') {
-                $result = @pg_query($this->connection, "SELECT a.adsrc
+                $select_field = $this->pg_major_server_version >= 12
+                    ? 'pg_get_expr(a.adbin, a.adrelid)'
+                    : 'a.adsrc';
+                $result = @pg_query($this->connection, "SELECT $select_field
                                     FROM $from, pg_attrdef a
                                     WHERE tab.relname = typ.typname AND typ.typrelid = f.attrelid
                                     AND f.attrelid = a.adrelid AND f.attname = '$field_name'
@@ -1110,6 +1127,33 @@ class DB_pgsql extends DB_common
                 || parent::_checkManip($query));
     }
 
+    // }}}
+    // {{{ _resultId()
+
+    /**
+     * Returns a numeric value identifying the result, used for maintaining
+     * indexes. Required by migration from resources to 'PgSql\Result'
+     * types with PHP 8.1.
+     *
+     * @param mixed $result  the query result resource or PgSql\Result
+     *
+     * @return int
+     *
+     * @access protected
+     */
+    function _resultId($result)
+    {
+        return
+            is_resource($result)
+                ? ( function_exists('get_resource_id')
+                    ? get_resource_id($result)
+                    : (int)$result
+                ) : ( function_exists('spl_object_id')
+                    ? spl_object_id($result)
+                    // catch-all statement
+                    : (int)$result
+                );
+     }
 }
 
 /*
