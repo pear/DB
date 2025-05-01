@@ -1152,7 +1152,7 @@ class DB_pgsql extends DB_common
                     ? spl_object_id($result)
                     // catch-all statement
                     : (int)$result
-                )
+                );
      }
 }
 
