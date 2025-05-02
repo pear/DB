@@ -362,10 +362,9 @@ class DB_pgsql extends DB_common
          */
 
         $this->affected = @pg_affected_rows($result);
-
         $result_status = @pg_result_status($result);
         if ($result_status === PGSQL_TUPLES_OK) {
-            // rows of data available
+            // this query has returned data
             $this->row[$this->_resultId($result)] = 0; // reset the row counter.
             $numrows = $this->numRows($result);
             if (is_object($numrows)) {
@@ -378,7 +377,7 @@ class DB_pgsql extends DB_common
             // unexpected response from pg_query
             return $this->pgsqlRaiseError();
         } else {
-            // catch all for other non-error statuses
+            // catch all for non-error statuses
             return DB_OK;
         }
     }
