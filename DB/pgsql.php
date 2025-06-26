@@ -368,7 +368,8 @@ class DB_pgsql extends DB_common
             $this->row[$this->_resultId($result)] = 0; // reset the row counter.
             $numrows = $this->numRows($result);
             if (is_object($numrows)) {
-                // pg_num_rows() has returned an error
+                // pg_num_rows() has returned -1, so we then got an
+                // exception object returned from our numRows() method
                 return $numrows;
             }
             $this->_num_rows[$this->_resultId($result)] = $numrows;
@@ -572,7 +573,7 @@ class DB_pgsql extends DB_common
     function numRows($result)
     {
         $rows = @pg_num_rows($result);
-        if ($rows === null) {
+        if ($rows == -1) {
             return $this->pgsqlRaiseError();
         }
         return $rows;
