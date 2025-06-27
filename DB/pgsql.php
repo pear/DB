@@ -353,9 +353,6 @@ class DB_pgsql extends DB_common
         /*
          * Determine whether queries produce affected rows, result or nothing.
          *
-         * This logic was introduced in version 1.1 of the file by ssb,
-         * though the regex has been modified slightly since then.
-         *
          * PostgreSQL commands:
          * ABORT, ALTER, BEGIN, CLOSE, CLUSTER, COMMIT, COPY,
          * CREATE, DECLARE, DELETE, DROP TABLE, EXPLAIN, FETCH,
@@ -363,22 +360,25 @@ class DB_pgsql extends DB_common
          * REVOKE, ROLLBACK, SELECT, SELECT INTO, SET, SHOW,
          * UNLISTEN, UPDATE, VACUUM, WITH
          */
-        if ($ismanip) {
-            $this->affected = @pg_affected_rows($result);
-            return DB_OK;
-        } elseif (preg_match('/^\s*\(*\s*(SELECT|EXPLAIN|FETCH|SHOW|WITH)\s/si',
-                             $query))
-        {
-           $this->row[$this->_resultId($result)] = 0; // reset the row counter.
+
+        $this->affected = @pg_affected_rows($result);
+        $result_status = @pg_result_status($result);
+        if ($result_status === PGSQL_TUPLES_OK) {
+            // this query has returned data
+            $this->row[$this->_resultId($result)] = 0; // reset the row counter.
             $numrows = $this->numRows($result);
             if (is_object($numrows)) {
+                // pg_num_rows() has returned -1, so we then got an
+                // exception object returned from our numRows() method
                 return $numrows;
             }
             $this->_num_rows[$this->_resultId($result)] = $numrows;
-            $this->affected = 0;
             return $result;
+        } elseif (in_array($result_status, [PGSQL_BAD_RESPONSE, PGSQL_NONFATAL_ERROR, PGSQL_FATAL_ERROR])) {
+            // unexpected response from pg_query
+            return $this->pgsqlRaiseError();
         } else {
-            $this->affected = 0;
+            // catch all for non-error statuses
             return DB_OK;
         }
     }
@@ -573,7 +573,7 @@ class DB_pgsql extends DB_common
     function numRows($result)
     {
         $rows = @pg_num_rows($result);
-        if ($rows === null) {
+        if ($rows == -1) {
             return $this->pgsqlRaiseError();
         }
         return $rows;
