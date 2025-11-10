@@ -220,7 +220,7 @@ class DB_odbc extends DB_common
                                                    $dsn['cursor']);
         }
 
-        if (!is_resource($this->connection)) {
+        if (!is_resource($this->connection) && !is_a($result, 'Odbc\Connection')) {
             return $this->raiseError(DB_ERROR_CONNECT_FAILED,
                                      null, null, null,
                                      $this->errorNative());
@@ -366,7 +366,7 @@ class DB_odbc extends DB_common
      */
     function freeResult($result)
     {
-        return is_resource($result) ? odbc_free_result($result) : false;
+        return (is_resource($result) || is_a($result, 'Odbc\Result')) ? odbc_free_result($result) : false;
     }
 
     // }}}
@@ -691,7 +691,7 @@ class DB_odbc extends DB_common
      */
     function errorNative()
     {
-        if (!is_resource($this->connection)) {
+        if (!is_resource($this->connection) && !is_a($result, 'Odbc\Connection')) {
             return @odbc_error() . ' ' . @odbc_errormsg();
         }
         return @odbc_error($this->connection) . ' ' . @odbc_errormsg($this->connection);
@@ -745,7 +745,7 @@ class DB_odbc extends DB_common
             $got_string = false;
         }
 
-        if (!is_resource($id)) {
+        if (!is_resource($id) && !is_a($result, 'Odbc\Result')) {
             return $this->odbcRaiseError(DB_ERROR_NEED_MORE_DATA);
         }
 
