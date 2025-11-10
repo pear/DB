@@ -71,9 +71,9 @@ DB is compatible with PHP 5 and PHP 8.
   <email>cox@idecnet.com</email>
   <active>no</active>
  </developer>
- <date>2024-04-15</date>
+ <date>2025-11-10</date>
  <version>
-  <release>1.12.2</release>
+  <release>1.12.3</release>
   <api>1.12.0</api>
  </version>
  <stability>
@@ -82,11 +82,10 @@ DB is compatible with PHP 5 and PHP 8.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-* Task: Manage E_DEPRECATED #27
-* Task: Remove CVS id that no longer makes sense #30
-* Bug: Bug in DB/oci8.php ... oci_fetch_array called with wrong parameters #33 #34
-* Bug: Errors raised in DB_storage::toString() if there are multi-column keys, on PHP >= 7 #35
-* Bug: sqlite3 back-end incorrectly refers to 'resource' objects #38 #39
+* Bug: pgsql back-end resource handling broken on PHP 8.1 #37
+* Bug: fix error in lastId in mysqli driver #42
+* Bug: PHP 8.1 pgsql change of return values #43
+* Task: PostgreSQL refactor: handle all data returned by native functions in DB_pgsql::simpleQuery() #44 #46
  </notes>
  <contents>
   <dir name="/">
