@@ -166,6 +166,7 @@ DB is compatible with PHP 5 and PHP 8.
      <file name="19getlistof.phpt" role="test" />
      <file name="20locale.phpt" role="test" />
      <file name="21freeResult.phpt" role="test" />
+     <file name="22selectdb.phpt" role="test" />
      <file name="connect.inc" role="test" />
      <file name="droptable.inc" role="test" />
      <file name="mktable.inc" role="test" />
