@@ -380,6 +380,11 @@ class DB_mysqli extends DB_common
     /**
      * Sends a query to the database server
      *
+     * If you want to perform an unbuffered query set the "result_buffering" option
+     * to 0 using setOptions().  This will cause the mysqli_query() call to set
+     * the result mode to MYSQLI_USE_RESULT, rather than using MYSQLI_STORE_RESULT
+     * (the default).  This option was added in Release 1.12.4.
+     *
      * @param string  the SQL query string
      *
      * @return mixed  + a PHP result resrouce for successful SELECT queries
@@ -406,7 +411,13 @@ class DB_mysqli extends DB_common
             }
             $this->transaction_opcount++;
         }
-        $result = @mysqli_query($this->connection, $query);
+        if (!$this->options['result_buffering']) {
+            $result_mode = MYSQLI_USE_RESULT;
+        }
+        else {
+            $result_mode = MYSQLI_STORE_RESULT;
+        }
+        $result = @mysqli_query($this->connection, $query, $result_mode);
         if (!$result) {
             return $this->mysqliRaiseError();
         }
